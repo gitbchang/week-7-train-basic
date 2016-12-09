@@ -1,4 +1,7 @@
 // Initialize Firebase
+$(document).ready(function(){
+
+
 var config = {
     apiKey: "AIzaSyDOKiDoDUYN39d3AZN2isGTaCPQUzIcE20",
     authDomain: "my-first-firebase-42f62.firebaseapp.com",
@@ -19,10 +22,22 @@ var connectionsRef = database.ref("/connections");
 // database reference for everyone
 var connectedRef = database.ref(".info/connected");
 
+var firebaseObject;
 
 
 database.ref("/trainScheduleData").on("value", function(snapshot){
+  firebaseObject = snapshot.val();
 
+  console.log(firebaseObject.trainName);
+  // use stringify to turn firebase keys into array?
+  // for(var x = 0; x< 5; x++){
+  //
+  // }
+  var newTableElement = $("<td>");
+  // not working properly
+  newTableElement.text(firebaseObject.trainName);
+
+  $("#trainScheduleArea").html(firebaseObject.trainName);
 
 
 },
@@ -38,6 +53,10 @@ $("#submitButton").on("click", function(){
   var newFirstTime = $("#firstTimeInput").val().trim();
   var newFrequency = $("#frequencyInput").val().trim();
 
+  console.log(newTrainName);
+  console.log(newDestination);
+  console.log(newFirstTime);
+  console.log(newFrequency);
 
   database.ref("/trainScheduleData").set({
     trainName: newTrainName,
@@ -48,3 +67,6 @@ $("#submitButton").on("click", function(){
   });
 
 });
+
+
+}); // end of document ready
