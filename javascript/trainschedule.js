@@ -32,21 +32,46 @@ database.ref("/trainScheduleData").on("child_added", function(snapshot){
   var ftime = snapval.firstTrainTime;
   var freq = snapval.frequency;
 
+  // Calculate the next arrival time and how many minutes away
+  var currentTime = moment();
+  var currentTimeFormatted = moment(currentTime).format("HH:mm");
+
+  // var firstTimeConverted = moment(firstTime, "hh:mm");
+  var firstTimeConverted = moment(ftime, "HH:mm");
+
+  console.log("Current Time: " + currentTimeFormatted);
+
+  console.log("firebase: " + ftime);
+  console.log("firstTimeConverted: " + firstTimeConverted);
+
+  // Current Time - First Train of the Day
+  var timeDiff = currentTime.diff(moment(firstTimeConverted), "minutes");
+  console.log("time difference: " + timeDiff);
+
+  // ex. trains starts at 3:00 AM, runs every 15 min. time is now 3:25 AM
+  // current - first time = 25 min. Modulus 25 % 15, returns 10
+  // out of the 15 minutes, 10 minutes has passed so 5 minutes until train comes
+  var tRemainder = timeDiff % freq;
+  console.log("time remaining: " + tRemainder);
+  // figure out how many minutes until train arrives
+  var tMinutesTillTrain = freq - tRemainder;
+  // add above minutes to get the next train arrival
+  var tNextTrain = moment().add(tMinutesTillTrain, "minutes");
+  // format the above time
+  var newtNextTrain = moment(tNextTrain).format("HH:mm");
+  console.log("new next train: " + newtNextTrain);
 
 
-  // console.log(firebaseObject.trainName);
-  // use stringify to turn firebase keys into array?
-  // for(var x = 0; x< 5; x++){
-  //
-  // }
+
 
 
 
   $("#trainScheduleArea").prepend("<tr><td>" + tname + "</td>" +
                                       "<td>" + dest + "</td>" +
                                       "<td>" + freq + "</td>" +
-                                      "<td>" + "Next Arrival" + "</td>" +
-                                      "<td>" + "Minutes Away" + "</td></tr>");
+                                      "<td>" + newtNextTrain + "</td>" +
+                                      "<td>" + tMinutesTillTrain +
+                                      "</td></tr>");
 
 
 },
@@ -76,6 +101,8 @@ $("#submitButton").on("click", function(){
   });
 
 });
+
+
 
 
 }); // end of document ready
