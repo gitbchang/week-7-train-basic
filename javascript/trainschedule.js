@@ -22,22 +22,31 @@ var connectionsRef = database.ref("/connections");
 // database reference for everyone
 var connectedRef = database.ref(".info/connected");
 
-var firebaseObject;
 
 
-database.ref("/trainScheduleData").on("value", function(snapshot){
-  firebaseObject = snapshot.val();
 
-  console.log(firebaseObject.trainName);
+database.ref("/trainScheduleData").on("child_added", function(snapshot){
+  var snapval = snapshot.val();
+  var tname = snapval.trainName;
+  var dest = snapval.destination;
+  var ftime = snapval.firstTrainTime;
+  var freq = snapval.frequency;
+
+
+
+  // console.log(firebaseObject.trainName);
   // use stringify to turn firebase keys into array?
   // for(var x = 0; x< 5; x++){
   //
   // }
-  var newTableElement = $("<td>");
-  // not working properly
-  newTableElement.text(firebaseObject.trainName);
 
-  $("#trainScheduleArea").html(firebaseObject.trainName);
+
+
+  $("#trainScheduleArea").prepend("<tr><td>" + tname + "</td>" +
+                                      "<td>" + dest + "</td>" +
+                                      "<td>" + freq + "</td>" +
+                                      "<td>" + "Next Arrival" + "</td>" +
+                                      "<td>" + "Minutes Away" + "</td></tr>");
 
 
 },
@@ -58,7 +67,7 @@ $("#submitButton").on("click", function(){
   console.log(newFirstTime);
   console.log(newFrequency);
 
-  database.ref("/trainScheduleData").set({
+  database.ref("/trainScheduleData").push({
     trainName: newTrainName,
     destination: newDestination,
     firstTrainTime: newFirstTime,
