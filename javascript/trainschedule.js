@@ -61,11 +61,6 @@ database.ref("/trainScheduleData").on("child_added", function(snapshot){
   var newtNextTrain = moment(tNextTrain).format("HH:mm");
   console.log("new next train: " + newtNextTrain);
 
-
-
-
-
-
   $("#trainScheduleArea").prepend("<tr><td>" + tname + "</td>" +
                                       "<td>" + dest + "</td>" +
                                       "<td>" + freq + "</td>" +
